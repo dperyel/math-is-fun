@@ -6,11 +6,14 @@ import math
 import random
 
 class Crypto(metaclass=ABCMeta):
+    pass
+
+class Encryptable(metaclass=ABCMeta):
     @abstractmethod
     def encrypt(self, value: int) -> int:
         pass
 
-class RSA(Crypto):
+class RSA(Crypto, Encryptable):
     """Naive way of implementation of RSA"""
     
     def __init__(self, p1, p2):
@@ -40,18 +43,29 @@ class RSA(Crypto):
 class EllipticCurve(Crypto):
     """Creates an instance of elliptic curve and provides the necessary calculations for ECC"""
 
-    def __init__(self, a, b):
+    def __init__(self, a, b, point):
         """Provide the constants for y^2 = x^3 + ax + b"""
+
         self.a = a
         self.b = b
-        self.private = random.randint(100, 200)
+        self.initial_point = point
+        self.private = random.randint(10, 30)
 
-    def encrypt(self, value: int) -> int:
-        pass
+    def get_point_to(self, n=0):
+        times = n if n > 0 else self.private
+        collections = list()
+
+        while True:
+            if n < 1:
+                break
+            k = int(math.log2(n))
+            n -= 2**k
+            collections.append(k)
+
+        print(collections);
 
     def get_y_by_x(self, x: float) -> (float, float):
         top = math.sqrt(x**3 + self.a * x + self.b)
-
         return (top, -top)
 
     def line(self, point1: Vector, point2: Vector) -> (float, float):
@@ -62,8 +76,11 @@ class EllipticCurve(Crypto):
         else:
             return self.__calculate_secant(point1, point2)
 
-    def nextPoint(self, point1: Vector, point2: Vector) -> Vector:
-        pass
+    def __get_result_point(self, point1: Vector, point2: Vector, slop: float) -> Vector:
+        x = slop**2 - (point1[0] + point2[0])
+        y = slop*(point1[0] - x) - point1[1]
+
+        return Vector(x, y)
 
     def __calculate_tangent(self, point: Vector) -> (float, float):
         x, y = point

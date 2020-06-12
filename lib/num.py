@@ -4,7 +4,7 @@ import math
 
 
 def co_prime_num(num):
-    """Calculates amount of co-prime numbers"""
+    """Naive way to calculates amount of co-prime numbers"""
 
     co_primes = [c for c in range(num) if math.gcd(num, c) == 1]
 

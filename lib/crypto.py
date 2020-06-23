@@ -64,10 +64,6 @@ class EllipticCurve(Crypto):
 
         print(collections);
 
-    def get_y_by_x(self, x: float) -> (float, float):
-        top = math.sqrt(x**3 + self.a * x + self.b)
-        return (top, -top)
-
     def line(self, point1: Vector, point2: Vector) -> (float, float):
         """Calculates either tangent or secant of"""
 
@@ -97,3 +93,7 @@ class EllipticCurve(Crypto):
         shift = y1 - slop*x1
 
         return (slop, shift)
+
+def get_y_by_x(a: int, b: int, x: float) -> (float, float):
+    top = math.sqrt(x**3 + a * x + b)
+    return (top, -top)
